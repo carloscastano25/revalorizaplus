@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registrar Envases</title>
+</head>
+<body>
+    <h1>Registrar Envases para {{ usuario.nombre }} {{ usuario.apellido }}</h1>
+
+    <p>Puntos Totales Actuales: {{ puntos_totales }}</p>
+    <p>Puntos Acumulados en esta Sesión: {{ puntos_acumulados }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="guardar_envase">Guardar Envase</button>
+    </form>
+
+    <h2>Envases Registrados en esta Sesión:</h2>
+    <ul>
+        {% for envase in envases_registrados %}
+            <li>
+                <strong>Envase {{ envase.numero }}</strong> - 
+                Hora: {{ envase.hora }} - 
+                Categoría: {{ envase.categoria }} - 
+                Puntos: {{ envase.puntos }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="guardar">Guardar Cambios</button>
+    </form>
+
+    <a href="{% url 'perfil_usuario' usuario.id %}">Volver al Perfil</a>
+</body>
+</html>

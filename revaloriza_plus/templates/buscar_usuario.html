@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Buscar Usuario</title>
+</head>
+<body>
+    <h1>Buscar Usuario</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Buscar</button>
+    </form>
+    {% if usuario %}
+        <h2>Usuario Encontrado</h2>
+        <p>Nombre: {{ usuario.nombre }}</p>
+        <p>Apellido: {{ usuario.apellido }}</p>
+        <p>Cédula: {{ usuario.cedula }}</p>
+        <p>Dirección: {{ usuario.direccion }}</p>
+        <p>Teléfono: {{ usuario.telefono }}</p>
+        <a href="{% url 'perfil_usuario' usuario.id %}">Ver Perfil</a>
+    {% endif %}
+</body>
+</html>

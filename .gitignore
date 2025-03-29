@@ -1,0 +1,30 @@
+# Ignorar el entorno virtual
+nuevo_venv/
+venv/
+env/
+
+# Ignorar archivos de configuración de Python
+*.pyc
+__pycache__/
+
+# Ignorar archivos de bases de datos locales
+*.sqlite3
+
+# Ignorar configuraciones específicas del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Ignorar configuraciones de IDEs
+.vscode/
+.idea/
+
+# Ignorar archivos de logs
+*.log
+
+# Ignorar archivos estáticos generados automáticamente
+staticfiles/
+media/
+
+# Ignorar configuraciones de despliegue
+*.env
+.env

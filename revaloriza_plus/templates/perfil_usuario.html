@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Perfil del Usuario</title>
+</head>
+<body>
+    <h1>Perfil del Usuario</h1>
+    <p>Nombre: {{ usuario.nombre }}</p>
+    <p>Apellido: {{ usuario.apellido }}</p>
+    <p>Cédula: {{ usuario.cedula }}</p>
+    <p>Teléfono: {{ usuario.telefono }}</p>
+    <p>Dirección: {{ usuario.direccion }}</p>
+    <p>Email: {{ usuario.user.email }}</p>
+
+    <h2>Puntos (Total: {{ total_puntos }})</h2>
+    <ul>
+        {% for punto in puntos %}
+            <li>{{ punto.cantidad }} puntos otorgados el {{ punto.fecha_otorgamiento }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Bonos</h2>
+    <ul>
+        {% for bono in bonos %}
+            <li>Bono de {{ bono.valor }} válido hasta {{ bono.fecha_vencimiento }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Botón para registrar envases -->
+    <form method="get" action="{% url 'registrar_envase' usuario.id %}">
+        <button type="submit">Registrar Envase</button>
+    </form>
+
+    <!-- Botón para salir del usuario -->
+    <form method="get" action="{% url 'pagina_principal' %}">
+        <button type="submit">Salir del Usuario</button>
+    </form>
+</body>
+</html>
