@@ -1,15 +1,34 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, get_backends
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.forms import AuthenticationForm
 from .models import PerfilUsuario, Punto, Envase, Bono, CategoriaEnvase
 from .forms import RegistroForm, RegistroEnvaseForm, BuscarUsuarioForm
 from datetime import datetime
 from django.db.models import Sum
 
+class CustomLoginView(LoginView):
+    template_name = 'pagina_principal.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['registro_form'] = RegistroForm()  # Agrega el formulario de registro al contexto
+        context['login_form'] = self.get_form()  # Agrega el formulario de inicio de sesión al contexto
+        context['is_login_page'] = True  # Bandera para diferenciar la página de login
+        return context
+
 def pagina_principal(request):
+    # Obtener el tipo de formulario a mostrar (por defecto, el formulario de registro)
+    form_type = request.GET.get('form_type', 'registro')  # 'registro' o 'login'
+
     usuario = None
     total_puntos = 0
     es_admin = request.user.is_staff if request.user.is_authenticated else False
+
+    # Formularios de registro e inicio de sesión
+    registro_form = RegistroForm()
+    login_form = AuthenticationForm()
 
     if request.user.is_authenticated:
         try:
@@ -19,11 +38,22 @@ def pagina_principal(request):
         except PerfilUsuario.DoesNotExist:
             usuario = None
 
-    return render(request, 'pagina_principal.html', {
-        'usuario': usuario,
-        'total_puntos': total_puntos,
-        'es_admin': es_admin,
-    })
+        # Renderizar la página principal para usuarios autenticados
+        return render(request, 'pagina_principal.html', {
+            'usuario': usuario,
+            'total_puntos': total_puntos,
+            'es_admin': es_admin,
+            'registro_form': registro_form,  # Pasar el formulario de registro al contexto
+            'login_form': login_form,  # Pasar el formulario de inicio de sesión al contexto
+            'form_type': form_type,  # Pasar el tipo de formulario al contexto
+        })
+    else:
+        # Renderizar la página principal para usuarios no autenticados
+        return render(request, 'pagina_principal.html', {
+            'registro_form': registro_form,  # Pasar el formulario de registro al contexto
+            'login_form': login_form,  # Pasar el formulario de inicio de sesión al contexto
+            'form_type': form_type,  # Pasar el tipo de formulario al contexto
+        })
 
 def lista_usuarios(request):
     usuarios = PerfilUsuario.objects.all()
@@ -134,10 +164,15 @@ def registro(request):
             backend = get_backends()[0]
             user.backend = f'{backend.__module__}.{backend.__class__.__name__}'
             login(request, user)
-            return redirect('pagina_principal')
+            return redirect('pagina_principal')  # Redirige a la página principal después del registro
     else:
         form = RegistroForm()
-    return render(request, 'registro.html', {'form': form})
+
+    # Renderiza la página principal con el formulario de registro
+    return render(request, 'pagina_principal.html', {
+        'registro_form': form,  # Pasar el formulario de registro al contexto
+        'login_form': AuthenticationForm(),  # Pasar también el formulario de inicio de sesión
+    })
 
 @login_required
 def perfil_usuario_actual(request):

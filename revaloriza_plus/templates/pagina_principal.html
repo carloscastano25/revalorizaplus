@@ -1,32 +1,113 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página Principal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .left-section {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .right-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            overflow-y: auto; /* Permite desplazamiento vertical si el contenido es demasiado grande */
+            padding: 20px; /* Agrega espacio alrededor del contenido */
+        }
+        .form-container {
+            width: 100%;
+            max-width: 400px;
+        }
+        .toggle-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .toggle-buttons a {
+            flex: 1;
+            margin: 5px;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Bienvenido a RevalorizaPlus</h1>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Parte izquierda con el logo -->
+            <div class="col-md-4 left-section">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="img-fluid">
+            </div>
 
-    {% if user.is_authenticated %}
-        <p>Usuario: {{ usuario.nombre }} {{ usuario.apellido }}</p>
-        <p>Tus puntos totales: {{ total_puntos }}</p>
+            <!-- Parte derecha -->
+            <div class="col-md-8 right-section">
+                {% if user.is_authenticated %}
+                    <!-- Si el usuario está autenticado -->
+                    <div class="text-center">
+                        <h1>Bienvenido, {{ usuario.nombre }} {{ usuario.apellido }}</h1>
+                        <p>Tus puntos totales: <strong>{{ total_puntos }}</strong></p>
 
-        {% if es_admin %}
-            <h2>Opciones Administrativas</h2>
-            <ul>
-                <li><a href="{% url 'buscar_usuario' %}">Buscar Usuarios</a></li>
-                <!-- Puedes añadir más opciones administrativas aquí -->
-            </ul>
-        {% endif %}
+                        {% if es_admin %}
+                            <h2>Opciones Administrativas</h2>
+                            <ul>
+                                <li><a href="{% url 'buscar_usuario' %}">Buscar Usuarios</a></li>
+                                <!-- Puedes añadir más opciones administrativas aquí -->
+                            </ul>
+                        {% endif %}
 
-        <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit">Cerrar sesión</button>
-        </form>
-    {% else %}
-        <p>Regístrate o inicia sesión para empezar.</p>
-        <a href="{% url 'login' %}">Iniciar sesión</a>
-        <a> </a>
-        <a href="{% url 'registro' %}">Registrarse</a>
-    {% endif %}
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+                        </form>
+                    </div>
+                {% else %}
+                    <!-- Si el usuario no está autenticado -->
+                    <div class="form-container">
+                        <!-- Botones para alternar entre registro e inicio de sesión -->
+                        <div class="toggle-buttons">
+                            <a href="?form_type=registro" class="btn {% if form_type == 'registro' %}btn-primary{% else %}btn-secondary{% endif %} me-2">Registrarse</a>
+                            <a href="?form_type=login" class="btn {% if form_type == 'login' %}btn-primary{% else %}btn-secondary{% endif %}">Iniciar Sesión</a>
+                        </div>
+
+                        <!-- Formulario de registro -->
+                        {% if form_type == 'registro' %}
+                        <div id="form-registro">
+                            <h3 class="text-center">Registrarse</h3>
+                            <form method="post" action="{% url 'registro' %}">
+                                {% csrf_token %}
+                                {{ registro_form.as_p }}
+                                <button type="submit" class="btn btn-success w-100">Registrarse</button>
+                            </form>
+                        </div>
+                        {% endif %}
+
+                        <!-- Formulario de inicio de sesión -->
+                        {% if form_type == 'login' %}
+                        <div id="form-login">
+                            <h3 class="text-center">Iniciar Sesión</h3>
+                            <form method="post" action="{% url 'login' %}">
+                                {% csrf_token %}
+                                {{ login_form.as_p }}
+                                <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

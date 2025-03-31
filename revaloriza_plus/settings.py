@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,6 +26,11 @@ SECRET_KEY = 'django-insecure-9e&+x8xed**gamxhf!%ofqwk!&wbv7(-mxnx59+t8k6=&s&9%d
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+STATIC_URL = '/static/'
+
+# Agrega esta configuración si no está presente
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 
 # Application definition
