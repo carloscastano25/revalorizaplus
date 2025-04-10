@@ -16,13 +16,13 @@
             justify-content: center;
         }
         .right-section {
-            height: 100vh;
+            min-height: 100vh; /* Asegura que la sección derecha ocupe al menos toda la altura de la pantalla */
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            overflow-y: auto; /* Permite desplazamiento vertical si el contenido es demasiado grande */
             padding: 20px; /* Agrega espacio alrededor del contenido */
+            overflow-y: auto; /* Permite desplazamiento vertical si el contenido es demasiado grande */
         }
         .form-container {
             width: 100%;
